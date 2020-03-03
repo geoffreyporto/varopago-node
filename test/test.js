@@ -2,10 +2,10 @@ var assert = require('assert');
 var _ = require('underscore');
 var request = require('request');
 
-var Openpay = require('../lib/openpay');
+var Varopago = require('../lib/varopago');
 /*Sandbox*/
-var openpay = new Openpay('m1qp3av1ymcfufkuuoah', 'sk_ed05f1de65fa4a67a3d3056a4efa2905');
-openpay.setTimeout(10000);
+var varopago = new Varopago('m1qp3av1ymcfufkuuoah', 'sk_ed05f1de65fa4a67a3d3056a4efa2905');
+varopago.setTimeout(10000);
 
 var enableLogging = true;
 var testCreateCharges = true;
@@ -40,7 +40,7 @@ describe('Testing whole API', function(){
 	  
 	  describe('Create Webhook', function() {
 		  it('Should return statusCode 201', function(done) {
-			  openpay.webhooks.create(webhook_params, function (error, body, response){
+			  varopago.webhooks.create(webhook_params, function (error, body, response){
 		          printLog(response.statusCode, body, error);
 		          assert.equal(response.statusCode, 201, '');
 		          webhook = body;
@@ -51,7 +51,7 @@ describe('Testing whole API', function(){
 
 	  describe('Get webhook by id and status verified', function() {
 		  it('Should return status code 200', function(done) {
-			  openpay.webhooks.get(webhook.id, function(error, body, response) {
+			  varopago.webhooks.get(webhook.id, function(error, body, response) {
 				  printLog(response.statusCode, body, error);
 		          assert.equal(response.statusCode, 200, '');
 		          assert.equal(body.status, 'verified', '');
@@ -66,7 +66,7 @@ describe('Testing whole API', function(){
 			  getVerificationCode(webhook.url + '?inspect', function(error, verification_code) {
 				  console.info('webhook.id = ' + webhook.id);
 				  console.info('verification_code = ' + verification_code);
-				  openpay.webhooks.verify(webhook.id, verification_code, function(error, body, response) {
+				  varopago.webhooks.verify(webhook.id, verification_code, function(error, body, response) {
 					  printLog(response.statusCode, body, error);
 			          assert.equal(response.statusCode, 204, '');
 			          done();
@@ -76,10 +76,9 @@ describe('Testing whole API', function(){
 	  });
 */
 
-
 	  describe('Get webhook by id and status verified', function() {
 		  it('Should return status code 200', function(done) {
-			  openpay.webhooks.get(webhook.id, function(error, body, response) {
+			  varopago.webhooks.get(webhook.id, function(error, body, response) {
 				  printLog(response.statusCode, body, error);
 		          assert.equal(response.statusCode, 200, '');
 		          assert.equal(body.status, 'verified', '');
@@ -90,7 +89,7 @@ describe('Testing whole API', function(){
 	  
 	  describe('List webhooks by id merchant', function() {
 		  it('Should return status code 200', function(done) {
-			  openpay.webhooks.list(function(error, body, response) {
+			  varopago.webhooks.list(function(error, body, response) {
 				  printLog(response.statusCode, body, error);
 		          assert.equal(response.statusCode, 200, '');
 		          assert.equal(body.length, 1, '');
@@ -101,7 +100,7 @@ describe('Testing whole API', function(){
 	  
 	  describe('Delete webhook by id', function() {
 		  it('Should return statusCode 204', function(done) {
-			  openpay.webhooks.delete(webhook.id, function(error, body, response) {
+			  varopago.webhooks.delete(webhook.id, function(error, body, response) {
 				  printLog(response.statusCode, body, error);
 		          assert.equal(response.statusCode, 204, '');
 		          done();
@@ -115,7 +114,7 @@ describe('Testing whole API', function(){
   describe('Testing merchant', function() {
     describe('Get merchant', function(){
       it('should return statusCode 200', function (done){
-        openpay.merchant.get(function (error, body, response){
+        varopago.merchant.get(function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -128,7 +127,7 @@ describe('Testing whole API', function(){
   describe('Testing customers', function(){
     describe('Create customer', function(){
       it('should return statusCode 200||201', function (done){
-        openpay.customers.create(testCreateCustomer, function (error, body, response){
+        varopago.customers.create(testCreateCustomer, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, '');
           newlyCreatedCustomerId = body.id;
@@ -138,7 +137,7 @@ describe('Testing whole API', function(){
     });
     describe('Get all customers without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.list({}, function (error, body, response){
+        varopago.customers.list({}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -147,7 +146,7 @@ describe('Testing whole API', function(){
     });
     describe('Get customer', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.get(newlyCreatedCustomerId, function (error, body, response){
+        varopago.customers.get(newlyCreatedCustomerId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -156,7 +155,7 @@ describe('Testing whole API', function(){
     });
     describe('Update customer', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.update(newlyCreatedCustomerId, testUpdateCustomer, function (error, body, response){
+        varopago.customers.update(newlyCreatedCustomerId, testUpdateCustomer, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -165,7 +164,7 @@ describe('Testing whole API', function(){
     });
     describe('Get all customers with constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.list({'creation':'2013-12-10'}, function (error, body, response){
+        varopago.customers.list({'creation':'2013-12-10'}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -188,7 +187,7 @@ describe('Testing whole API', function(){
   describe('Testing cards API', function(){
     describe('Add card', function(){
       it('should return statusCode 200||201', function (done){
-        openpay.cards.create(testCard, function (error, body, response){
+        varopago.cards.create(testCard, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, '');
           newlyCreatedCardId = body.id;
@@ -198,7 +197,7 @@ describe('Testing whole API', function(){
     });
     describe('Get all cards without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.cards.list({}, function (error, body, response){
+        varopago.cards.list({}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -207,7 +206,7 @@ describe('Testing whole API', function(){
     });
     describe('Get card', function(){
       it('should return statusCode 200', function (done){
-        openpay.cards.get(newlyCreatedCardId, function (error, body, response){
+        varopago.cards.get(newlyCreatedCardId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -217,7 +216,7 @@ describe('Testing whole API', function(){
     
     describe('Add customer card', function(){
       it('should return statusCode 200||201', function (done){
-        openpay.customers.cards.create(newlyCreatedCustomerId, testCard, function (error, body, response){
+        varopago.customers.cards.create(newlyCreatedCustomerId, testCard, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, '');
           newlyCreatedCustomerCardId = body.id;
@@ -227,7 +226,7 @@ describe('Testing whole API', function(){
     });
     describe('Get all customer cards without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.cards.list(newlyCreatedCustomerId, {}, function (error, body, response){
+        varopago.customers.cards.list(newlyCreatedCustomerId, {}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -236,7 +235,7 @@ describe('Testing whole API', function(){
     });
     describe('Get customer card', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.cards.get(newlyCreatedCustomerId, newlyCreatedCustomerCardId, function (error, body, response){
+        varopago.customers.cards.get(newlyCreatedCustomerId, newlyCreatedCustomerCardId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -255,7 +254,7 @@ describe('Testing whole API', function(){
   describe('Testing bankaccounts', function(){
     describe('Create bankaccount', function(){
       it('should return statusCode 200||201', function (done){
-        openpay.customers.bankaccounts.create(newlyCreatedCustomerId, testBankAccount, function (error, body, response){
+        varopago.customers.bankaccounts.create(newlyCreatedCustomerId, testBankAccount, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, '');
           newlyCreatedBankAccountId = body.id;
@@ -265,7 +264,7 @@ describe('Testing whole API', function(){
     });
     describe('Get all bank accounts without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.bankaccounts.list(newlyCreatedCustomerId, {}, function (error, body, response){
+        varopago.customers.bankaccounts.list(newlyCreatedCustomerId, {}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -274,7 +273,7 @@ describe('Testing whole API', function(){
     });
     describe('Get bankaccount', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.bankaccounts.get(newlyCreatedCustomerId, newlyCreatedBankAccountId, function (error, body, response){
+        varopago.customers.bankaccounts.get(newlyCreatedCustomerId, newlyCreatedBankAccountId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -331,7 +330,7 @@ describe('Testing whole API', function(){
   describe('Testing charges', function(){
     describe('Get all charges without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.charges.list({}, function (error, body, response){
+        varopago.charges.list({}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, 'Status code == 200');
           done();
@@ -343,7 +342,7 @@ describe('Testing whole API', function(){
         it('should return statusCode 200||201', function (done){
           testExistingCardCharge.source_id = newlyCreatedCardId;
           //console.log(testExistingCardCharge);
-          openpay.charges.create(testExistingCardCharge, function (error, body, response){
+          varopago.charges.create(testExistingCardCharge, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             done();
@@ -353,7 +352,7 @@ describe('Testing whole API', function(){
       var newlyCreatedTransactionId = '';
       describe('Create charge with new card', function(){
         it('should return statusCode 200||201', function (done){
-          openpay.charges.create(testCreateCharge, function (error, body, response){
+          varopago.charges.create(testCreateCharge, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             newlyCreatedTransactionId = body.id;
@@ -363,7 +362,7 @@ describe('Testing whole API', function(){
       });
       describe('Get charge', function(){
         it('should return statusCode 200', function (done){
-          openpay.charges.get(newlyCreatedTransactionId, function (error, body, response){
+          varopago.charges.get(newlyCreatedTransactionId, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode, 200, '');
             done();
@@ -372,7 +371,7 @@ describe('Testing whole API', function(){
       });
       describe('Refund merchant charge', function(){
         it('should return statusCode 200', function (done){
-          openpay.charges.refund(newlyCreatedTransactionId, testRefundData, function (error, body, response){
+          varopago.charges.refund(newlyCreatedTransactionId, testRefundData, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode, 200, '');
             done();
@@ -381,7 +380,7 @@ describe('Testing whole API', function(){
       });
       describe('Create charge without capture', function(){
         it('should return statusCode 200||201', function (done){
-          openpay.charges.create(testCreateChargeWithoutCapture, function (error, body, response){
+          varopago.charges.create(testCreateChargeWithoutCapture, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             newlyCreatedTransactionId = body.id;
@@ -391,7 +390,7 @@ describe('Testing whole API', function(){
       });
       describe('Capture charge', function(){
         it('should return statusCode 200||201', function (done){
-          openpay.charges.capture(newlyCreatedTransactionId, null, function (error, body, response){
+          varopago.charges.capture(newlyCreatedTransactionId, null, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             done();
@@ -400,7 +399,7 @@ describe('Testing whole API', function(){
       });
       describe('Create charge with new bank account', function(){
         it('should return statusCode 200||201', function (done){
-          openpay.charges.create(testCreateBankAccountCharge, function (error, body, response){
+          varopago.charges.create(testCreateBankAccountCharge, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             newlyCreatedTransactionId = body.id;
@@ -410,7 +409,7 @@ describe('Testing whole API', function(){
       });
       describe('Create charge on Store', function(){
         it('should return statusCode 200', function (done){
-          openpay.charges.create(testCreateStoreCharge, function (error, body, response){
+          varopago.charges.create(testCreateStoreCharge, function (error, body, response){
             assert.equal(response.statusCode, 200, 'Status code != 200');
             assert.notEqual(body.id, null);
             assert.equal(body.method, 'store');
@@ -427,7 +426,7 @@ describe('Testing whole API', function(){
       it('should return statusCode 200||201', function (done){
         testExistingCardCharge.source_id = newlyCreatedCustomerCardId; //fails if use merchant card
         //console.log(testExistingCardCharge);
-        openpay.customers.charges.create(newlyCreatedCustomerId, testExistingCardCharge, function (error, body, response){
+        varopago.customers.charges.create(newlyCreatedCustomerId, testExistingCardCharge, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
           done();
@@ -437,7 +436,7 @@ describe('Testing whole API', function(){
     var newlyCreatedCustomerTransactionId = '';
     describe('Create customer charge with new card', function(){
       it('should return statusCode 200||201', function (done){
-        openpay.customers.charges.create(newlyCreatedCustomerId, testCreateCharge, function (error, body, response){
+        varopago.customers.charges.create(newlyCreatedCustomerId, testCreateCharge, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
           newlyCreatedCustomerTransactionId = body.id;
@@ -447,7 +446,7 @@ describe('Testing whole API', function(){
     });
     describe('Get all customer charges without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.charges.list(newlyCreatedCustomerId, {}, function (error, body, response){
+        varopago.customers.charges.list(newlyCreatedCustomerId, {}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, 'Status code == 200');
           done();
@@ -456,7 +455,7 @@ describe('Testing whole API', function(){
     });
     describe('Get customer charge', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.charges.get(newlyCreatedCustomerId, newlyCreatedCustomerTransactionId, function (error, body, response){
+        varopago.customers.charges.get(newlyCreatedCustomerId, newlyCreatedCustomerTransactionId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -465,7 +464,7 @@ describe('Testing whole API', function(){
     });
     /*describe('Refund customer charge', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.charges.refund(newlyCreatedCustomerId, newlyCreatedCustomerTransactionId, testRefundData, function (error, body, response){
+        varopago.customers.charges.refund(newlyCreatedCustomerId, newlyCreatedCustomerTransactionId, testRefundData, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -474,7 +473,7 @@ describe('Testing whole API', function(){
     });*/
     describe('Create customer charge with new bank account', function(){
       it('should return statusCode 200||201', function (done){
-        openpay.customers.charges.create(newlyCreatedCustomerId, testCreateBankAccountCharge, function (error, body, response){
+        varopago.customers.charges.create(newlyCreatedCustomerId, testCreateBankAccountCharge, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
           newlyCreatedCustomerTransactionId = body.id;
@@ -490,18 +489,18 @@ describe('Testing whole API', function(){
     describe('Create transfer', function(){
       it('should return statusCode 200||201', function (done){
         var temporalCustomerId = '';
-        openpay.customers.create(testCreateCustomer, function (error, body, response){
+        varopago.customers.create(testCreateCustomer, function (error, body, response){
           temporalCustomerId = body.id;
           var testTransfer = {
             "customer_id" : temporalCustomerId,
             "amount" : 1.50,
             "description" : "Test transfer"
           };
-          openpay.customers.transfers.create(newlyCreatedCustomerId, testTransfer, function (error, body, response){
+          varopago.customers.transfers.create(newlyCreatedCustomerId, testTransfer, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             newlyCreatedTransactionId = body.id;
-            openpay.customers.delete(temporalCustomerId, function(error, response, body){
+            varopago.customers.delete(temporalCustomerId, function(error, response, body){
               done();
             });
           });
@@ -510,7 +509,7 @@ describe('Testing whole API', function(){
     });
     describe('Get all transfers without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.transfers.list(newlyCreatedCustomerId, {}, function (error, body, response){
+        varopago.customers.transfers.list(newlyCreatedCustomerId, {}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, 'Status code == 200');
           done();
@@ -519,7 +518,7 @@ describe('Testing whole API', function(){
     });
     describe('Get transfer', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.transfers.get(newlyCreatedCustomerId, newlyCreatedTransactionId, function (error, body, response){
+        varopago.customers.transfers.get(newlyCreatedCustomerId, newlyCreatedTransactionId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -552,7 +551,7 @@ describe('Testing whole API', function(){
   describe('Testing payouts', function(){
     describe('Get all payouts without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.payouts.list({}, function (error, body, response){
+        varopago.payouts.list({}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, 'Status code == 200');
           done();
@@ -563,7 +562,7 @@ describe('Testing whole API', function(){
       var newlyCreatedTransactionId = '';
       describe('Create payout with new card', function(){
         it('should return statusCode 200||201', function (done){
-          openpay.payouts.create(testCardPayout, function (error, body, response){
+          varopago.payouts.create(testCardPayout, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             newlyCreatedTransactionId = body.id;
@@ -573,7 +572,7 @@ describe('Testing whole API', function(){
       });
       describe('Get payout', function(){
         it('should return statusCode 200', function (done){
-          openpay.payouts.get(newlyCreatedTransactionId, function (error, body, response){
+          varopago.payouts.get(newlyCreatedTransactionId, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode, 200, '');
             done();
@@ -582,7 +581,7 @@ describe('Testing whole API', function(){
       });
       describe('Create payout with new bank account', function(){
         it('should return statusCode 200||201', function (done){
-          openpay.payouts.create(testBankAccountPayout, function (error, body, response){
+          varopago.payouts.create(testBankAccountPayout, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             newlyCreatedTransactionId = body.id;
@@ -598,7 +597,7 @@ describe('Testing whole API', function(){
             "amount": 1.50,
             "description": "Test payout with existing card"
           };
-          openpay.payouts.create(testExistingCardPayout, function (error, body, response){
+          varopago.payouts.create(testExistingCardPayout, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             newlyCreatedTransactionId = body.id;
@@ -614,7 +613,7 @@ describe('Testing whole API', function(){
             "amount": 1.50,
             "description": "Test payout with existing bank account"
           };
-          openpay.payouts.create(testExistingBankAccountPayout, function (error, body, response){
+          varopago.payouts.create(testExistingBankAccountPayout, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             newlyCreatedTransactionId = body.id;
@@ -626,7 +625,7 @@ describe('Testing whole API', function(){
       var newlyCreatedCustomerTransactionId = '';
       describe('Create customer payout with new card', function(){
         it('should return statusCode 200||201', function (done){
-          openpay.customers.payouts.create(newlyCreatedCustomerId, testCardPayout, function (error, body, response){
+          varopago.customers.payouts.create(newlyCreatedCustomerId, testCardPayout, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             newlyCreatedCustomerTransactionId = body.id;
@@ -636,7 +635,7 @@ describe('Testing whole API', function(){
       });
       describe('Get all customer payouts without constraints', function(){
         it('should return statusCode 200', function (done){
-          openpay.customers.payouts.list(newlyCreatedCustomerId, {}, function (error, body, response){
+          varopago.customers.payouts.list(newlyCreatedCustomerId, {}, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode, 200, 'Status code == 200');
             done();
@@ -645,7 +644,7 @@ describe('Testing whole API', function(){
       });
       describe('Get customer payout', function(){
         it('should return statusCode 200', function (done){
-          openpay.customers.payouts.get(newlyCreatedCustomerId, newlyCreatedCustomerTransactionId, function (error, body, response){
+          varopago.customers.payouts.get(newlyCreatedCustomerId, newlyCreatedCustomerTransactionId, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode, 200, '');
             done();
@@ -654,7 +653,7 @@ describe('Testing whole API', function(){
       });
       describe('Create customer payout with new bank account', function(){
         it('should return statusCode 200||201', function (done){
-          openpay.customers.payouts.create(newlyCreatedCustomerId, testBankAccountPayout, function (error, body, response){
+          varopago.customers.payouts.create(newlyCreatedCustomerId, testBankAccountPayout, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             newlyCreatedCustomerTransactionId = body.id;
@@ -671,7 +670,7 @@ describe('Testing whole API', function(){
       describe('Create customer payout with existing card', function(){
         it('should return statusCode 200||201', function (done){
           testExistingItemPayout.destination_id = newlyCreatedCustomerCardId;
-          openpay.customers.payouts.create(newlyCreatedCustomerId, testExistingItemPayout, function (error, body, response){
+          varopago.customers.payouts.create(newlyCreatedCustomerId, testExistingItemPayout, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             done();
@@ -681,7 +680,7 @@ describe('Testing whole API', function(){
       describe('Create customer payout with existing bank account', function(){
         it('should return statusCode 200||201', function (done){
           testExistingItemPayout.destination_id = newlyCreatedBankAccountId;
-          openpay.customers.payouts.create(newlyCreatedCustomerId, testExistingItemPayout, function (error, body, response){
+          varopago.customers.payouts.create(newlyCreatedCustomerId, testExistingItemPayout, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             done();
@@ -700,7 +699,7 @@ describe('Testing whole API', function(){
           "amount" : 1.50,
           "description" : "Test fee"
         };
-        openpay.fees.create(testFee, function (error, body, response){
+        varopago.fees.create(testFee, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
           done();
@@ -709,7 +708,7 @@ describe('Testing whole API', function(){
     });
     describe('Get all fees without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.fees.list({}, function (error, body, response){
+        varopago.fees.list({}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, 'Status code == 200');
           done();
@@ -731,7 +730,7 @@ describe('Testing whole API', function(){
   describe('Testing plans', function(){
     describe('Create plan', function(){
       it('should return statusCode 200||201', function (done){
-        openpay.plans.create(testPlan, function (error, body, response){
+        varopago.plans.create(testPlan, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
           newlyCreatedPlanId = body.id;
@@ -741,7 +740,7 @@ describe('Testing whole API', function(){
     });
     describe('Get all plans without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.plans.list(function (error, body, response){
+        varopago.plans.list(function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, 'Status code == 200');
           done();
@@ -750,7 +749,7 @@ describe('Testing whole API', function(){
     });
     describe('Get plan', function(){
       it('should return statusCode 200', function (done){
-        openpay.plans.get(newlyCreatedPlanId, function (error, body, response){
+        varopago.plans.get(newlyCreatedPlanId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -759,7 +758,7 @@ describe('Testing whole API', function(){
     });
     describe('Update plan', function(){
       it('should return statusCode 200', function (done){
-        openpay.plans.update(newlyCreatedPlanId, {"name": "Test plan"}, function (error, body, response){
+        varopago.plans.update(newlyCreatedPlanId, {"name": "Test plan"}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -768,7 +767,7 @@ describe('Testing whole API', function(){
     });
     describe('Get plan subscriptions', function(){
       it('should return statusCode 200', function (done){
-        openpay.plans.listSubscriptions(newlyCreatedPlanId, function (error, body, response){
+        varopago.plans.listSubscriptions(newlyCreatedPlanId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -782,7 +781,7 @@ describe('Testing whole API', function(){
     describe('Create subscription', function(){
       it('should return statusCode 200||201', function (done){
         var testSubscription = {"plan_id": newlyCreatedPlanId, "card_id": newlyCreatedCustomerCardId, "trial_days": "30"};
-        openpay.customers.subscriptions.create(newlyCreatedCustomerId, testSubscription, function (error, body, response){
+        varopago.customers.subscriptions.create(newlyCreatedCustomerId, testSubscription, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
           newlyCreatedSubscriptionId = body.id;
@@ -792,7 +791,7 @@ describe('Testing whole API', function(){
     });
     describe('Get all subscriptions without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.subscriptions.list(newlyCreatedCustomerId, function (error, body, response){
+        varopago.customers.subscriptions.list(newlyCreatedCustomerId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, 'Status code == 200');
           done();
@@ -801,7 +800,7 @@ describe('Testing whole API', function(){
     });
     describe('Get subscription', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.subscriptions.get(newlyCreatedCustomerId, newlyCreatedSubscriptionId, function (error, body, response){
+        varopago.customers.subscriptions.get(newlyCreatedCustomerId, newlyCreatedSubscriptionId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -810,7 +809,7 @@ describe('Testing whole API', function(){
     });
     describe('Update subscription', function(){
       it('should return statusCode 200', function (done){
-        openpay.customers.subscriptions.update(newlyCreatedCustomerId, newlyCreatedSubscriptionId, {"trial_end_date": "2021-02-11"}, function (error, body, response){
+        varopago.customers.subscriptions.update(newlyCreatedCustomerId, newlyCreatedSubscriptionId, {"trial_end_date": "2021-02-11"}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -819,7 +818,7 @@ describe('Testing whole API', function(){
     });
     describe('Delete subscription', function(){
       it('should return statusCode 204', function (done){
-        openpay.customers.subscriptions.delete(newlyCreatedCustomerId, newlyCreatedSubscriptionId, function (error, body, response){
+        varopago.customers.subscriptions.delete(newlyCreatedCustomerId, newlyCreatedSubscriptionId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 204, '');
           done();
@@ -831,7 +830,7 @@ describe('Testing whole API', function(){
 
   describe('Delete plan', function(){
     it('should return statusCode 204', function (done){
-      openpay.plans.delete(newlyCreatedPlanId, function (error, body, response){
+      varopago.plans.delete(newlyCreatedPlanId, function (error, body, response){
         printLog(response.statusCode, body, error);
         assert.equal(response.statusCode, 204, '');
         done();
@@ -840,7 +839,7 @@ describe('Testing whole API', function(){
   });
   describe('Delete card', function(){
     it('should return statusCode 204', function (done){
-      openpay.cards.delete(newlyCreatedCardId, function (error, body, response){
+      varopago.cards.delete(newlyCreatedCardId, function (error, body, response){
         printLog(response.statusCode, body, error);
         assert.equal(response.statusCode, 204, '');
         done();
@@ -849,7 +848,7 @@ describe('Testing whole API', function(){
   });
   describe('Delete customer card', function(){
     it('should return statusCode 204', function (done){
-      openpay.customers.cards.delete(newlyCreatedCustomerId, newlyCreatedCustomerCardId, function (error, body, response){
+      varopago.customers.cards.delete(newlyCreatedCustomerId, newlyCreatedCustomerCardId, function (error, body, response){
         printLog(response.statusCode, body, error);
         assert.equal(response.statusCode, 204, '');
         done();
@@ -859,7 +858,7 @@ describe('Testing whole API', function(){
 
   describe('Delete bankaccount', function(){
     it('should return statusCode 204', function (done){
-      openpay.customers.bankaccounts.delete(newlyCreatedCustomerId, newlyCreatedBankAccountId, function (error, body, response){
+      varopago.customers.bankaccounts.delete(newlyCreatedCustomerId, newlyCreatedBankAccountId, function (error, body, response){
         printLog(response.statusCode, body, error);
         assert.equal(response.statusCode, 204, '');
         done();
@@ -869,7 +868,7 @@ describe('Testing whole API', function(){
 
   describe('Delete customer', function(){
     it('should return statusCode 204', function (done){
-      openpay.customers.delete(newlyCreatedCustomerId, function (error, body, response){
+      varopago.customers.delete(newlyCreatedCustomerId, function (error, body, response){
         printLog(response.statusCode, body, error);
         assert.equal(response.statusCode, 204, '');
         done();

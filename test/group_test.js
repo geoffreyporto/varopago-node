@@ -2,10 +2,10 @@ var assert = require('assert');
 var _ = require('underscore');
 var request = require('request');
 
-var Openpay = require('../lib/openpay');
+var Varopago = require('../lib/varopago');
 /*Sandbox*/
-var openpay = new Openpay('gdntnaxvkcdviesgaxem', 'sk_b97e606487d34b44ab66e03d5bd14747');
-openpay.setTimeout(10000);
+var varopago = new Varopago('gdntnaxvkcdviesgaxem', 'sk_b97e606487d34b44ab66e03d5bd14747');
+varopago.setTimeout(10000);
 
 var enableLogging = true;
 var testCreateCharges = true;
@@ -28,7 +28,7 @@ describe('Testing group API', function(){
   describe('Testing customers', function(){
     describe('Create customer', function(){
       it('should return statusCode 200||201', function (done){
-        openpay.groups.customers.create(testCreateCustomer, function (error, body, response){
+        varopago.groups.customers.create(testCreateCustomer, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, '');
           newlyCreatedCustomerId = body.id;
@@ -38,7 +38,7 @@ describe('Testing group API', function(){
     });
     describe('Get all customers without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.groups.customers.list({}, function (error, body, response){
+        varopago.groups.customers.list({}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -47,7 +47,7 @@ describe('Testing group API', function(){
     });
     describe('Get customer', function(){
       it('should return statusCode 200', function (done){
-        openpay.groups.customers.get(newlyCreatedCustomerId, function (error, body, response){
+        varopago.groups.customers.get(newlyCreatedCustomerId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -56,7 +56,7 @@ describe('Testing group API', function(){
     });
     describe('Update customer', function(){
       it('should return statusCode 200', function (done){
-        openpay.groups.customers.update(newlyCreatedCustomerId, testUpdateCustomer, function (error, body, response){
+        varopago.groups.customers.update(newlyCreatedCustomerId, testUpdateCustomer, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -65,7 +65,7 @@ describe('Testing group API', function(){
     });
     describe('Get all customers with constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.groups.customers.list({'creation':'2013-12-10'}, function (error, body, response){
+        varopago.groups.customers.list({'creation':'2013-12-10'}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -88,7 +88,7 @@ describe('Testing group API', function(){
 
     describe('Add customer card', function(){
       it('should return statusCode 200||201', function (done){
-        openpay.groups.customers.cards.create(newlyCreatedCustomerId, testCard, function (error, body, response){
+        varopago.groups.customers.cards.create(newlyCreatedCustomerId, testCard, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, '');
           newlyCreatedCustomerCardId = body.id;
@@ -99,7 +99,7 @@ describe('Testing group API', function(){
     });
     describe('Get all customer cards without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.groups.customers.cards.list(newlyCreatedCustomerId, {}, function (error, body, response){
+        varopago.groups.customers.cards.list(newlyCreatedCustomerId, {}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -108,7 +108,7 @@ describe('Testing group API', function(){
     });
     describe('Get customer card', function(){
       it('should return statusCode 200', function (done){
-        openpay.groups.customers.cards.get(newlyCreatedCustomerId, newlyCreatedCustomerCardId, function (error, body, response){
+        varopago.groups.customers.cards.get(newlyCreatedCustomerId, newlyCreatedCustomerCardId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -170,7 +170,7 @@ describe('Testing group API', function(){
         it('should return statusCode 200||201', function (done){
           testExistingCardCharge.source_id = newlyCreatedCardId;
           //console.log(testExistingCardCharge);
-          openpay.groups.charges.create(merchantId, testExistingCardCharge, function (error, body, response){
+          varopago.groups.charges.create(merchantId, testExistingCardCharge, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             done();
@@ -180,7 +180,7 @@ describe('Testing group API', function(){
       var newlyCreatedTransactionId = '';
       describe('Create charge with new card', function(){
         it('should return statusCode 200||201', function (done){
-          openpay.groups.charges.create(merchantId, testCreateCharge, function (error, body, response){
+          varopago.groups.charges.create(merchantId, testCreateCharge, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             newlyCreatedTransactionId = body.id;
@@ -190,7 +190,7 @@ describe('Testing group API', function(){
       });
       describe('Refund merchant charge', function(){
         it('should return statusCode 200', function (done){
-          openpay.groups.charges.refund(merchantId, newlyCreatedTransactionId, testRefundData, function (error, body, response){
+          varopago.groups.charges.refund(merchantId, newlyCreatedTransactionId, testRefundData, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode, 200, '');
             done();
@@ -199,7 +199,7 @@ describe('Testing group API', function(){
       });
       describe('Create charge without capture', function(){
         it('should return statusCode 200||201', function (done){
-          openpay.groups.charges.create(merchantId, testCreateChargeWithoutCapture, function (error, body, response){
+          varopago.groups.charges.create(merchantId, testCreateChargeWithoutCapture, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             newlyCreatedTransactionId = body.id;
@@ -209,7 +209,7 @@ describe('Testing group API', function(){
       });
       describe('Capture charge', function(){
         it('should return statusCode 200||201', function (done){
-          openpay.groups.charges.capture(merchantId, newlyCreatedTransactionId, null, function (error, body, response){
+          varopago.groups.charges.capture(merchantId, newlyCreatedTransactionId, null, function (error, body, response){
             printLog(response.statusCode, body, error);
             assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
             done();
@@ -222,7 +222,7 @@ describe('Testing group API', function(){
       it('should return statusCode 200||201', function (done){
         testExistingCardCharge.source_id = newlyCreatedCustomerCardId; //fails if use merchant card
         //console.log(testExistingCardCharge);
-        openpay.groups.customers.charges.create(merchantId, newlyCreatedCustomerId, testExistingCardCharge, function (error, body, response){
+        varopago.groups.customers.charges.create(merchantId, newlyCreatedCustomerId, testExistingCardCharge, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
           done();
@@ -232,7 +232,7 @@ describe('Testing group API', function(){
     var newlyCreatedCustomerTransactionId = '';
     describe('Create customer charge with new card', function(){
       it('should return statusCode 200||201', function (done){
-        openpay.groups.customers.charges.create(merchantId, newlyCreatedCustomerId, testCreateCharge, function (error, body, response){
+        varopago.groups.customers.charges.create(merchantId, newlyCreatedCustomerId, testCreateCharge, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
           newlyCreatedCustomerTransactionId = body.id;
@@ -248,7 +248,7 @@ describe('Testing group API', function(){
     describe('Create subscription', function(){
       it('should return statusCode 200||201', function (done){
         var testSubscription = {"plan_id": newlyCreatedPlanId, "card_id": newlyCreatedCustomerCardId, "trial_days": "30"};
-        openpay.groups.customers.subscriptions.create(merchantId, newlyCreatedCustomerId, testSubscription, function (error, body, response){
+        varopago.groups.customers.subscriptions.create(merchantId, newlyCreatedCustomerId, testSubscription, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode == 200 || response.statusCode == 201, true, 'Status code == 200');
           newlyCreatedSubscriptionId = body.id;
@@ -258,7 +258,7 @@ describe('Testing group API', function(){
     });
     describe('Get all subscriptions without constraints', function(){
       it('should return statusCode 200', function (done){
-        openpay.groups.customers.subscriptions.list(merchantId, newlyCreatedCustomerId, function (error, body, response){
+        varopago.groups.customers.subscriptions.list(merchantId, newlyCreatedCustomerId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, 'Status code == 200');
           done();
@@ -267,7 +267,7 @@ describe('Testing group API', function(){
     });
     describe('Get subscription', function(){
       it('should return statusCode 200', function (done){
-        openpay.groups.customers.subscriptions.get(merchantId, newlyCreatedCustomerId, newlyCreatedSubscriptionId, function (error, body, response){
+        varopago.groups.customers.subscriptions.get(merchantId, newlyCreatedCustomerId, newlyCreatedSubscriptionId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -276,7 +276,7 @@ describe('Testing group API', function(){
     });
     describe('Update subscription', function(){
       it('should return statusCode 200', function (done){
-        openpay.groups.customers.subscriptions.update(merchantId, newlyCreatedCustomerId, newlyCreatedSubscriptionId, {"trial_end_date": "2022-02-11"}, function (error, body, response){
+        varopago.groups.customers.subscriptions.update(merchantId, newlyCreatedCustomerId, newlyCreatedSubscriptionId, {"trial_end_date": "2022-02-11"}, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 200, '');
           done();
@@ -285,7 +285,7 @@ describe('Testing group API', function(){
     });
     describe('Delete subscription', function(){
       it('should return statusCode 204', function (done){
-        openpay.groups.customers.subscriptions.delete(merchantId, newlyCreatedCustomerId, newlyCreatedSubscriptionId, function (error, body, response){
+        varopago.groups.customers.subscriptions.delete(merchantId, newlyCreatedCustomerId, newlyCreatedSubscriptionId, function (error, body, response){
           printLog(response.statusCode, body, error);
           assert.equal(response.statusCode, 204, '');
           done();
@@ -296,7 +296,7 @@ describe('Testing group API', function(){
 
   describe('Create and delete customer', function(){
     it('should return statusCode 200||201', function (done){
-      openpay.groups.customers.create(testCreateCustomer, function (error, body, response){
+      varopago.groups.customers.create(testCreateCustomer, function (error, body, response){
         printLog(response.statusCode, body, error);
         assert.equal(response.statusCode == 200 || response.statusCode == 201, true, '');
         newlyCreatedCustomerId = body.id;
@@ -305,7 +305,7 @@ describe('Testing group API', function(){
     });
 
     it('should return statusCode 200||201', function (done){
-      openpay.groups.customers.cards.create(newlyCreatedCustomerId, testCard, function (error, body, response){
+      varopago.groups.customers.cards.create(newlyCreatedCustomerId, testCard, function (error, body, response){
         printLog(response.statusCode, body, error);
         assert.equal(response.statusCode == 200 || response.statusCode == 201, true, '');
         newlyCreatedCustomerCardId = body.id;
@@ -314,7 +314,7 @@ describe('Testing group API', function(){
     });
 
     it('should return statusCode 204', function (done){
-      openpay.groups.customers.cards.delete(newlyCreatedCustomerId, newlyCreatedCustomerCardId, function (error, body, response){
+      varopago.groups.customers.cards.delete(newlyCreatedCustomerId, newlyCreatedCustomerCardId, function (error, body, response){
         printLog(response.statusCode, body, error);
         assert.equal(response.statusCode, 204, '');
         done();
@@ -324,7 +324,7 @@ describe('Testing group API', function(){
 
   describe('Delete customer', function(){
     it('should return statusCode 204', function (done){
-      openpay.groups.customers.delete(newlyCreatedCustomerId, function (error, body, response){
+      varopago.groups.customers.delete(newlyCreatedCustomerId, function (error, body, response){
         printLog(response.statusCode, body, error);
         assert.equal(response.statusCode, 204, '');
         done();
